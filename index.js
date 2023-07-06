@@ -1,45 +1,47 @@
-fetch(" http://localhost:3000/characters")
-  .then(response => response.json())
-  .then(characters => {
-    const animalNames = characters.map(character => character.name);
-    console.log(animalNames);
+//Begin by initializing necessary variables:
+let charactersUrl = "http://localhost:3000/characters"
+
+document.addEventListener('DOMContentLoaded', ()=>{
+
+  //fetch all animals from json server
+
+function loadAllCharacters(){
+  fetch(charactersUrl)
+    .then(res => res.json())
+    .then((data) =>{
+      addingNames(data);
+    })
+} 
+// Rendering only the animal names on the page
+function addingNames(chars){
+  chars.forEach((element)=>{
+    const animalName = document.createElement('h3');
+
+    animalName.textContent = element.name;
+    let p = document.getElementById('char-name');
+    p.appendChild(animalName);
+    animalName.addEventListener('click', ()=>{
+      
+      document.getElementById('character-name').textContent = element.name
+      document.getElementById('char-img').src=element.image
+
+      let btn = document.getElementById('char-votes')
+      btn.textContent = `Votes: ${element.votes}`
+      btn.addEventListener('click', ()=>{
+        element.votes+=1
+
+        btn.textContent = `Votes: ${element.votes}`
+      })
+  
+    
+    
+      
+      })
   })
-  .catch(error => {
-    console.error("Error:", error);
-  });
-  const animalList = document.getElementById('animal-list');
-const animalDetails = document.getElementById('animal-details');
-
-// Fetch the list of animals from the server
-fetch('/animals')
-  .then(response => response.json())
-  .then(animals => {
-    // Create an <li> element for each animal and add it to the animalList
-    animals.forEach(animal => {
-      const listItem = document.createElement('li');
-      listItem.textContent = animal.name;
-      listItem.addEventListener('click', () => {
-        // When an animal's name is clicked, fetch its details and display them
-        fetch(`/characters/${animal.id}`)
-          .then(response => response.json())
-          .then(animalData => displayAnimalDetails(animalData));
-      });
-      animalList.appendChild(listItem);
-    });
-  });
-
-function displayAnimalDetails(animal) {
-  // Clear previous details
-  animalDetails.innerHTML = '';
-
-  // Create elements to display the animal's image and vote count
-  const image = document.createElement('img');
-  image.src = animal.image;
-
-  const votes = document.createElement('p');
-  votes.textContent = `Votes: ${animal.votes}`;
-
-  // Append the image and vote count to the animalDetails div
-  animalDetails.appendChild(image);
-  animalDetails.appendChild(votes);
 }
+
+
+loadAllCharacters()
+})
+
+
